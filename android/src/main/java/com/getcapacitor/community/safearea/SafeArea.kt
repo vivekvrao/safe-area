@@ -4,6 +4,7 @@ import android.app.Activity
 import android.graphics.Color
 import android.view.WindowManager
 import android.webkit.WebView
+import android.widget.FrameLayout
 import androidx.core.graphics.Insets
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
@@ -97,11 +98,21 @@ class SafeArea(private val activity: Activity, private val webView: WebView) {
 
             // To get the actual height of the keyboard, we need to subtract the height of the system bars from the height of the ime
             // Source: https://stackoverflow.com/a/75328335/8634342
-            val imeHeight = (imeInsets.bottom - systemBarsInsets.bottom).coerceAtLeast(0)
+            //REMOVED val imeHeight = (imeInsets.bottom - systemBarsInsets.bottom).coerceAtLeast(0)
 
             // Set padding of decorview so the scroll view stays correct.
             // Otherwise the content behind the keyboard cannot be viewed by the user.
-            activity.window.decorView.setPadding(0, 0, 0, imeHeight)
+            //REMOVED activity.window.decorView.setPadding(0, 0, 0, imeHeight)
+            
+            
+            // Set padding so the scroll view stays correct.
+            // Otherwise the content behind the keyboard cannot be viewed by the user.
+            // The padding has to be set to the "content" view and not decor view as decor view includes the navigation bar background,
+            // which would then get pushed above the keyboard.
+            val contentView =
+                activity.window.decorView.findViewById<FrameLayout>(android.R.id.content)
+                    .getChildAt(0)
+            contentView.setPadding(0, 0, 0, imeInsets.bottom)
         }
     }
 
